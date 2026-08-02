@@ -1,113 +1,124 @@
 # Spiderlily 🌸
 
-An interactive digital art piece featuring a procedural **Spider Lily** (Lycoris radiata) that grows and blooms in real-time in response to your hands. By using your webcam and machine learning hand tracking, you can organically cultivate and open the flower with natural gestures.
+An interactive, high-contrast 3D digital art piece featuring a procedural **Spider Lily (*Lycoris radiata*)** that grows and blooms in real-time driven by your hands.
 
-It is available in two versions:
-1. **Web Version (`spiderlily-web/`)**: A self-contained Three.js + MediaPipe web application that runs directly in any modern browser.
-2. **TouchDesigner Version (`InteractiveFlower.43.toe`)**: The original interactive installation piece built for TouchDesigner.
+Using your webcam and MediaPipe machine learning hand tracking, you can organically cultivate, open, and sculpt the crimson flower using subtle hand gestures—all set against a stylized, high-contrast monochrome background feed.
+
+Available in two distinct builds:
+
+* **Web Version (`spiderlily-web/`):** A self-contained Three.js + MediaPipe web application running live in any modern browser.
+* **TouchDesigner Version (`InteractiveFlower.43.toe`):** The original installation piece built natively for TouchDesigner.
 
 ---
 
 ## 🎨 What is this project?
 
-This project is an exploration of organic growth and human-computer interaction. The red spider lily (*Lycoris radiata* or *higanbana*) is famous for its striking shape—an umbel of radial, curling petals and long, elegant stamens. This project recreates its lifecycle procedurally, allowing a user to steer its growth and bloom.
+This project is a personal exploration into organic procedural systems, real-time computer vision, and human-computer interaction.
+
+The red spider lily (*higanbana*) is famous in anime and lore for its striking, almost mystical silhouette—a radial cluster of curling crimson petals and long, elegant stamens. This project recreates its lifecycle algorithmically, giving you direct, physical control over its growth and bloom.
 
 ---
 
-## ⚙️ How it Works
+## ⚡ What's New in the Latest Build?
 
-The interaction follows a simple gesture system mapped to your hands:
+* **Noir Camera Backdrop:** Live webcam video stream styled in sleek, high-contrast black & white CSS grayscale, letting the bright red 3D flower pop dramatically on screen.
+* **Minimalist Gesture Tracking:** Clean, TouchDesigner-inspired white tracking dots and pinch-indicator lines replacing bulky hand skeletons.
+* **Direct WebGL Canvas Transparency:** Multi-pass composition setup ensuring zero-alpha canvas rendering behind the emissive 3D flower.
 
-### 1. Hand Tracking (MediaPipe)
-The system uses a webcam to capture video frames and runs the **MediaPipe Hand Landmarker** model. It tracks the 3D coordinates of your hands, identifying the handedness (left vs. right) and calculating the distance between the tips of your **Thumb** and **Index** finger (pinch distance).
+---
 
-*   **Left Hand:** Grows the plant from a small bud at the base to a full stalk.
-*   **Right Hand:** Drives the blooming process of the flower heads.
-*   *Note:* The mapping holds even if you cross your hands because MediaPipe distinguishes left and right hands.
+## ⚙️ How It Works
 
-### 2. Growth & Blooming Choreography
-*   **Procedural Growth:** The stem is built recursively using a branching algorithm (similar to an L-system), rendering solid, tapered cylinders.
-*   **Choreographed Blooming:** The bloom isn't just a simple scale-up. It is driven by a staged **Anime.js timeline** that controls the flower state through 5 key poses:
-    1.  **Tight Bud:** Petals are curled tightly inward.
-    2.  **Lift & Separate:** Petals begin to lift upward.
-    3.  **Arch & Recurve:** Petals arch outward and curl backward (recurve).
-    4.  **Stamen Extension:** Filament stems grow out and sweep upwards at the tip (declinate posture).
-    5.  **Full Bloom & Settle:** Anthers tilt, and the flower reaches its fully open state.
-    
-    Your right-hand pinch distance acts as a scrubber for this timeline, allowing you to manually step through the blooming process forward and backward.
+### 1. Gesture System (MediaPipe)
 
-### 3. Rendering & Aesthetics
-*   **Geometry:** The petals are dynamic 3D ribbons generated frame-by-frame using mathematical functions for the recurve and edge ripples. The stamens are declinate curves ending in rotating anthers.
-*   **Coloring:** Vertex colors are dynamically calculated to paint a pale pink throat, a midrib highlight, and rich crimson edges/tips.
-*   **Bloom Glow:** A post-processing `UnrealBloomPass` is applied to create a vibrant, dream-like emissive glow.
+The system captures video frames from your webcam and runs the MediaPipe Hand Landmarker model to track key joint coordinates in 3D space:
+
+* **Left Hand (Pinch/Spread):** Controls the structural growth of the plant stalk from a small bud to a full branching stem.
+* **Right Hand (Pinch/Spread):** Drives the actual blooming process of the flower heads.
+* *Note: MediaPipe detects handedness accurately even if you cross your hands.*
+
+### 2. Growth & Bloom Choreography
+
+* **Procedural Branching:** The stem is generated dynamically using a recursive branching algorithm to create tapered 3D cylinders.
+* **Timeline Scrubbing (Anime.js):** Instead of a simple scale-up, blooming is driven by a staged keyframe timeline:
+1. *Tight Bud* (Petals tightly wrapped)
+2. *Lift & Separate* (Petals open upward)
+3. *Arch & Recurve* (Petals arch outward and backward)
+4. *Stamen Extension* (Filaments sweep out and upward)
+5. *Full Bloom* (Anthers tilt into final posture)
+
+
+
+Your right-hand pinch distance acts as an interactive scrubber for this timeline, letting you step forward and backward through the bloom fluidly.
+
+### 3. Rendering & Emissive Glow
+
+* **Dynamic Mesh Geometry:** Petals are built frame-by-frame using trigonometric functions to calculate recurve bends and edge ripples.
+* **Emissive Crimson Shaders:** Custom material styling with high-intensity emissive channels and targeted drop-shadow blending so the spider lily glows vividly over the black & white camera feed.
 
 ---
 
 ## 🚀 Running the Web Version (Recommended)
 
-The Web Version is completely self-contained in `spiderlily-web/index.html` and pulls libraries (Three.js, MediaPipe, Anime.js) from CDNs.
+The Web version is completely self-contained in `spiderlily-web/index.html` with external libraries loaded via CDNs.
 
 ### Getting Started
 
-1.  **Serve the files locally** (a server is required to allow webcam and MediaPipe to run under secure context rules):
-    ```bash
-    cd spiderlily/spiderlily-web
-    python3 -m http.server 8642
-    ```
-    *(Alternatively, any local development server like `npx serve` or Live Server will work.)*
-2.  Open **`http://localhost:8642`** in a WebGL-compatible browser (Chrome or Safari recommended).
-3.  **Allow camera access** when prompted.
+1. Serve the repository locally (a local server is required for webcam and MediaPipe security permissions):
+```bash
+cd spiderlily-web
+python -m http.server 8642
 
-### Interactive Controls
+```
 
-*   **Left Hand (Pinch Out / Spread):** Grow the plant.
-*   **Right Hand (Pinch Out / Spread):** Bloom the flower.
-*   **Mouse Drag & Scroll:** Orbit, pan, and zoom the camera.
-*   **Keyboard Shortcuts:**
-    *   `D`: Toggle **Debug Mode** (auto-blooming cycle, no camera/hands needed).
-    *   `1`, `2`, `3`: Pin the bloom state to bud, arching, or full bloom (in Debug Mode).
-    *   `0`: Resume the automatic debug cycle.
-    *   `H`: Toggle visibility of the HUD and webcam overlay.
+
+2. Open **`http://localhost:8642`** in a WebGL-compatible browser (*Chrome, Brave, or Safari recommended*).
+3. Grant camera permissions when prompted.
 
 ---
 
-## 🎛️ Running the TouchDesigner Version
+## 🎛️ Controls & Shortcuts
 
-The TouchDesigner version uses native GPU pipelines and a dedicated TouchDesigner network.
-
-### Open it
-
-1. Install **TouchDesigner** (free non-commercial license) from
-   [derivative.ca](https://derivative.ca/download).
-2. Get the **MediaPipe engine** (see below) into the `toxes/` folder.
-3. Double-click **`InteractiveFlower.43.toe`**, or launch TouchDesigner and use
-   **File → Open** to select it.
-4. Press the play/perform controls to run it; a connected webcam drives the hand
-   tracking.
-
-### MediaPipe dependency
-
-The TouchDesigner version needs **everything in the `toxes/` folder**. The tracking
-toxes come with the repo; the one you have to add is the large **MediaPipe.tox**
-engine:
-
-Download **[MediaPipe.tox](https://github.com/cupidbity/spiderlily/releases/download/assets/MediaPipe.tox)**
-and put it in the **`toxes/`** folder alongside the others. Once all the toxes are
-in `toxes/`, the hand tracking will work.
-
-`MediaPipe.tox` is the free **MediaPipe for TouchDesigner** plugin:
-https://github.com/torinmb/mediapipe-touchdesigner
+| Input | Action |
+| --- | --- |
+| **Left Hand Pinch Out / Spread** | Grow the stem and branch structure |
+| **Right Hand Pinch Out / Spread** | Scrub the bloom timeline (open/close flowers) |
+| **Mouse Left Drag** | Orbit 3D camera |
+| **Mouse Right Drag** | Pan 3D camera |
+| **Mouse Scroll** | Zoom camera in / out |
+| **`D` Key** | Toggle Debug Mode (auto-blooming cycle without hand tracking) |
+| **`1` / `2` / `3` Keys** | Pin bloom state to *Bud*, *Arching*, or *Full Bloom* (Debug mode) |
+| **`0` Key** | Resume normal debug auto-cycle |
+| **`H` Key** | Toggle HUD overlay and text visibility |
 
 ---
 
-## Which one should I run?
+## 💻 Live Console Tweaking (`PARAMS`)
 
-- Want to try it instantly in a browser with just a webcam? → **Web version.**
-- Want the full TouchDesigner piece to edit or perform? → **TouchDesigner version.**
+All simulation parameters are exposed globally via `window.PARAMS` in your browser console:
+
+```javascript
+// Example console tweaks:
+window.PARAMS.stamens.count = 24;            // Change stamen density
+window.PARAMS.interaction.swapHands = true;  // Flip left/right hand controls
+window.PARAMS.debug.bloomCycleSeconds = 5;   // Speed up debug cycle
+
+```
+
+---
+
+## 🛠️ Running the TouchDesigner Version
+
+For the native GPU node-network build:
+
+1. Install [TouchDesigner](https://derivative.ca/) (Free non-commercial license works).
+2. Download `MediaPipe.tox` from [torinmb/mediapipe-touchdesigner](https://github.com/torinmb/mediapipe-touchdesigner).
+3. Place `MediaPipe.tox` inside the `toxes/` directory alongside the other `.tox` assets.
+4. Launch `InteractiveFlower.43.toe` in TouchDesigner and hit play.
 
 ---
 
 ## 📚 References & Inspiration
-*   Original video/tutorial reference for building procedural stems: [YouTube Tutorial](https://www.youtube.com/watch?v=KGALeCnTTbg&t=32s).
-*   MediaPipe plugin for TouchDesigner by Torin Blankensmith: [mediapipe-touchdesigner](https://github.com/torinmb/mediapipe-touchdesigner).
 
+* Stem branching geometry inspired by procedural L-system tutorials.
+* MediaPipe TouchDesigner integration plugin by Torin Blankensmith.
